@@ -23,7 +23,8 @@ class UserRepository:
         )
         return result.scalar_one_or_none()
 
-    async def create(self, user: User) -> User:
+    async def create(self, data: dict):
+        user = User(**data)
         self.db.add(user)
         await self.db.commit()
         await self.db.refresh(user)

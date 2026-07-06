@@ -25,11 +25,11 @@ class UserService:
                 detail="Phone already registered",
             )
 
-        user = User(
-            full_name=user_data.full_name,
-            email=user_data.email,
-            phone=user_data.phone,
-            hashed_password=hash_password(user_data.password),
-        )
+        user_dict = {
+            "full_name": user_data.full_name,
+            "email": user_data.email,
+            "phone": user_data.phone,
+            "hashed_password": hash_password(user_data.password),
+        }
 
-        return await self.repository.create(user)
+        return await self.repository.create(user_dict)
