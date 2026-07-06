@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="Слоник API")
+from app.api.v1.users import router as users_router
+
+app = FastAPI(
+    title="Слоник API",
+    version="1.0.0",
+)
+
+app.include_router(users_router)
+
 
 @app.get("/")
-def root():
-    return {"message": "Добро пожаловать в API фотоцентра Слоник"}
+async def root():
+    return {"message": "Добро пожаловать в API фотоцентра «Слоник»!"}
