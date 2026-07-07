@@ -4,6 +4,7 @@ from app.core.security import hash_password
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import UserCreate
+from app.core.security import verify_password, create_access_token
 
 
 class UserService:
@@ -33,3 +34,21 @@ class UserService:
         }
 
         return await self.repository.create(user_dict)
+
+    async def login(self, identifier: str, password: str):
+        user = await self.repository.get_by_email_or_phone(identifier)
+
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+
+        if not verify_password(password, user.hashed_password):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+
+        token = create_access_token(
+            data={"sub": str(user.id)}
+        )
+
+        return {
+            "access_token": token,
+            "token_type": "bearer",
+        }
