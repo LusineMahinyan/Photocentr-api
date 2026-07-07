@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.order import Order
 from app.models.order_item import OrderItem
@@ -63,28 +64,28 @@ class OrderRepository:
 
         return order
 
-
-    async def get_by_id(
-            self,
-            order_id: int
-    ):
+    async def get_by_id(self, order_id: int):
 
         result = await self.db.execute(
-            select(Order).where(
+            select(Order)
+            .options(
+                selectinload(Order.items)
+            )
+            .where(
                 Order.id == order_id
             )
         )
 
         return result.scalar_one_or_none()
 
-
-    async def get_user_orders(
-            self,
-            user_id: int
-    ):
+    async def get_user_orders(self, user_id: int):
 
         result = await self.db.execute(
-            select(Order).where(
+            select(Order)
+            .options(
+                selectinload(Order.items)
+            )
+            .where(
                 Order.user_id == user_id
             )
         )
