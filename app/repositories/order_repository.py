@@ -92,14 +92,17 @@ class OrderRepository:
 
         return result.scalars().all()
 
-
     async def get_all(self):
 
         result = await self.db.execute(
             select(Order)
+            .options(
+                selectinload(Order.items)
+            )
         )
 
         return result.scalars().all()
+
 
 
     async def update_status(
