@@ -1,0 +1,115 @@
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.order import Order
+from app.models.order_item import OrderItem
+from app.models.service import Service
+
+
+class OrderRepository:
+
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+
+    async def create(
+            self,
+            user_id: int,
+            service_ids: list[int]
+    ):
+
+        result = await self.db.execute(
+            select(Service).where(
+                Service.id.in_(service_ids),
+                Service.is_active.is_(True)
+            )
+        )
+
+        services = result.scalars().all()
+
+        if not services:
+            return None
+
+
+        total_price = sum(
+            service.price for service in services
+        )
+
+
+        order = Order(
+            user_id=user_id,
+            total_price=total_price,
+            status="new"
+        )
+
+        self.db.add(order)
+
+        await self.db.flush()
+
+
+        for service in services:
+            item = OrderItem(
+                order_id=order.id,
+                service_id=service.id,
+                quantity=1,
+                price=service.price
+            )
+
+            self.db.add(item)
+
+
+        await self.db.commit()
+        await self.db.refresh(order)
+
+        return order
+
+
+    async def get_by_id(
+            self,
+            order_id: int
+    ):
+
+        result = await self.db.execute(
+            select(Order).where(
+                Order.id == order_id
+            )
+        )
+
+        return result.scalar_one_or_none()
+
+
+    async def get_user_orders(
+            self,
+            user_id: int
+    ):
+
+        result = await self.db.execute(
+            select(Order).where(
+                Order.user_id == user_id
+            )
+        )
+
+        return result.scalars().all()
+
+
+    async def get_all(self):
+
+        result = await self.db.execute(
+            select(Order)
+        )
+
+        return result.scalars().all()
+
+
+    async def update_status(
+            self,
+            order: Order,
+            status: str
+    ):
+
+        order.status = status
+
+        await self.db.commit()
+        await self.db.refresh(order)
+
+        return order
