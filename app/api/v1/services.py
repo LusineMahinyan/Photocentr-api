@@ -9,6 +9,7 @@ from app.schemas.service import (
     ServiceResponse
 )
 from app.services.service_service import ServiceService
+from app.core.dependencies import require_admin
 
 
 
@@ -34,8 +35,10 @@ async def get_services(
 @router.post(
     "/",
     response_model=ServiceResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)]
 )
+
 async def create_service(
     service_data: ServiceCreate,
     db: AsyncSession = Depends(get_db)
@@ -48,8 +51,10 @@ async def create_service(
 
 @router.patch(
     "/{service_id}",
-    response_model=ServiceResponse
+    response_model=ServiceResponse,
+    dependencies=[Depends(require_admin)]
 )
+
 async def update_service(
     service_id: int,
     service_data: ServiceUpdate,
@@ -73,8 +78,10 @@ async def update_service(
 
 
 @router.delete(
-    "/{service_id}"
+    "/{service_id}",
+    dependencies=[Depends(require_admin)]
 )
+
 async def delete_service(
     service_id: int,
     db: AsyncSession = Depends(get_db)
