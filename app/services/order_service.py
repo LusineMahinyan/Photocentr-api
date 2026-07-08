@@ -27,14 +27,24 @@ class OrderService:
             user_id
         )
 
-
     async def get_order(
             self,
-            order_id: int
+            order_id: int,
+            user_id: int | None = None
     ):
-        return await self.repository.get_by_id(
+
+        order = await self.repository.get_by_id(
             order_id
         )
+
+        if not order:
+            return None
+
+        if user_id is not None:
+            if order.user_id != user_id:
+                return None
+
+        return order
 
 
     async def get_all_orders(self):

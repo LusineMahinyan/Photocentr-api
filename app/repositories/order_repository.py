@@ -117,3 +117,51 @@ class OrderRepository:
         await self.db.refresh(order)
 
         return order
+
+    async def create_from_cart(
+            self,
+            user_id: int,
+            cart
+    ):
+
+        total_price = 0
+
+        order = Order(
+            user_id=user_id,
+            total_price=0,
+            status="new"
+        )
+
+        self.db.add(order)
+
+        await self.db.flush()
+
+        for cart_item in cart.items:
+            price = cart_item.service.price
+
+            total_price += price * cart_item.quantity
+
+            order_item = OrderItem(
+                order_id=order.id,
+                service_id=cart_item.service_id,
+                quantity=cart_item.quantity,
+                price=price
+            )
+
+            self.db.add(order_item)
+
+        order.total_price = total_price
+
+        await self.db.commit()
+
+        result = await self.db.execute(
+            select(Order)
+            .options(
+                selectinload(Order.items)
+            )
+            .where(
+                Order.id == order.id
+            )
+        )
+
+        return result.scalar_one()
