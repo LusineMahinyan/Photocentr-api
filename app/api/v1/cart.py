@@ -85,3 +85,31 @@ async def remove_item(
     return {
         "message": "Товар удален из корзины"
     }
+
+@router.delete(
+    "/clear"
+)
+async def clear_cart(
+        current_user: User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db)
+):
+
+    repository = CartRepository(db)
+
+    service = CartService(
+        repository
+    )
+
+    result = await service.clear_cart(
+        current_user.id
+    )
+
+    if not result:
+        raise HTTPException(
+            status_code=404,
+            detail="Корзина не найдена"
+        )
+
+    return {
+        "message": "Корзина очищена"
+    }

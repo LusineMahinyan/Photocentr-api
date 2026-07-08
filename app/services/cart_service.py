@@ -7,7 +7,7 @@ class CartService:
     def __init__(
         self,
         cart_repository: CartRepository,
-        order_repository: OrderRepository
+        order_repository: OrderRepository | None = None
     ):
         self.cart_repository = cart_repository
         self.order_repository = order_repository
@@ -92,3 +92,11 @@ class CartService:
         )
 
         return order
+
+    async def clear_cart(
+            self,
+            user_id: int
+    ):
+        return await self.cart_repository.clear_cart(
+            user_id
+        )

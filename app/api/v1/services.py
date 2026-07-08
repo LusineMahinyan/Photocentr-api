@@ -10,7 +10,8 @@ from app.schemas.service import (
 )
 from app.services.service_service import ServiceService
 from app.core.dependencies import require_admin
-
+from app.core.dependencies import get_current_user
+from app.models.user import User
 
 
 router = APIRouter(
@@ -24,6 +25,7 @@ router = APIRouter(
     response_model=list[ServiceResponse]
 )
 async def get_services(
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     repository = ServiceRepository(db)

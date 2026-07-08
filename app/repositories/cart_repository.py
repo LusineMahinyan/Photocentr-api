@@ -128,7 +128,6 @@ class CartRepository:
             self,
             user_id: int
     ):
-
         cart = await self.get_by_user_id(
             user_id
         )

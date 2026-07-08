@@ -42,4 +42,3 @@ class CartItem(Base):
     )
 
     service: Mapped["Service"] = relationship()
-
