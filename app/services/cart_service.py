@@ -47,6 +47,7 @@ class CartService:
 
             items.append(
                 {
+                    "id": item.id,
                     "service_id": item.service_id,
                     "quantity": item.quantity,
                     "price": price

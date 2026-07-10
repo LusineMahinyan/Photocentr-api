@@ -1,0 +1,69 @@
+:root {
+
+  --main-orange: #ff8c00;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #333;
+  background: #fff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+body {
+
+  margin: 0;
+  min-width: 320px;
+  background: #fff;
+
+}
+
+
+#root {
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+}
+
+
+h1,
+h2,
+h3 {
+
+  color: #222;
+
+}
+
+
+.navbar {
+
+  width: 100%;
+
+}
+
+
+.btn-warning {
+
+  background-color: #ff8c00 !important;
+  border-color: #ff8c00 !important;
+  color: white !important;
+
+}
+
+
+.btn-warning:hover {
+
+  background-color: #e67e00 !important;
+  border-color: #e67e00 !important;
+
+}

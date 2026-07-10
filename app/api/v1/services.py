@@ -25,7 +25,6 @@ router = APIRouter(
     response_model=list[ServiceResponse]
 )
 async def get_services(
-    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     repository = ServiceRepository(db)

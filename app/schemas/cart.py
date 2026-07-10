@@ -5,9 +5,10 @@ class CartAddService(BaseModel):
     service_id: int
 
 class CartItemResponse(BaseModel):
+    id: int
     service_id: int
     quantity: int
-    price: int
+    price: float
 
 class CartResponse(BaseModel):
     items: list[CartItemResponse]
