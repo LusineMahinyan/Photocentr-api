@@ -23,7 +23,6 @@ async def test_get_services_route():
         )
 
         result = await get_services(
-            current_user=MagicMock(),
             db=MagicMock()
         )
 
