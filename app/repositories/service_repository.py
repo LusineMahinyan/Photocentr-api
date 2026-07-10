@@ -10,36 +10,24 @@ class ServiceRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-
     async def get_all_active(self):
         result = await self.db.execute(
-            select(Service).where(
-                Service.is_active.is_(True)
-            )
+            select(Service).where(Service.is_active.is_(True))
         )
 
         return result.scalars().all()
 
-
     async def get_by_id(self, service_id: int):
-        result = await self.db.execute(
-            select(Service).where(
-                Service.id == service_id
-            )
-        )
+        result = await self.db.execute(select(Service).where(Service.id == service_id))
 
         return result.scalar_one_or_none()
 
-
-    async def create(
-            self,
-            service_data: ServiceCreate
-    ):
+    async def create(self, service_data: ServiceCreate):
 
         service = Service(
             name=service_data.name,
             description=service_data.description,
-            price=service_data.price
+            price=service_data.price,
         )
 
         self.db.add(service)
@@ -49,16 +37,9 @@ class ServiceRepository:
 
         return service
 
+    async def update(self, service: Service, service_data: ServiceUpdate):
 
-    async def update(
-            self,
-            service: Service,
-            service_data: ServiceUpdate
-    ):
-
-        data = service_data.model_dump(
-            exclude_unset=True
-        )
+        data = service_data.model_dump(exclude_unset=True)
 
         for key, value in data.items():
             setattr(service, key, value)
@@ -68,10 +49,7 @@ class ServiceRepository:
 
         return service
 
-    async def delete(
-            self,
-            service: Service
-    ):
+    async def delete(self, service: Service):
         service.is_active = False
 
         await self.db.commit()

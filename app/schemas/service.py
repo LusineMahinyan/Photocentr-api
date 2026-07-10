@@ -10,21 +10,11 @@ class ServiceCreate(BaseModel):
 
 
 class ServiceUpdate(BaseModel):
-    name: str | None = Field(
-        default=None,
-        min_length=2,
-        max_length=255
-    )
+    name: str | None = Field(default=None, min_length=2, max_length=255)
 
-    description: str | None = Field(
-        default=None,
-        max_length=500
-    )
+    description: str | None = Field(default=None, max_length=500)
 
-    price: int | None = Field(
-        default=None,
-        gt=0
-    )
+    price: int | None = Field(default=None, gt=0)
 
 
 class ServiceResponse(BaseModel):

@@ -12,31 +12,19 @@ class CartRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_by_user_id(
-            self,
-            user_id: int
-    ):
+    async def get_by_user_id(self, user_id: int):
 
         result = await self.db.execute(
             select(Cart)
-            .where(
-                Cart.user_id == user_id
-            )
-            .options(
-                selectinload(Cart.items).selectinload(CartItem.service)
-            )
+            .where(Cart.user_id == user_id)
+            .options(selectinload(Cart.items).selectinload(CartItem.service))
         )
 
         return result.scalar_one_or_none()
 
-    async def create_cart(
-        self,
-        user_id: int
-    ):
+    async def create_cart(self, user_id: int):
 
-        cart = Cart(
-            user_id=user_id
-        )
+        cart = Cart(user_id=user_id)
 
         self.db.add(cart)
 
@@ -46,33 +34,21 @@ class CartRepository:
 
         return cart
 
-    async def add_service(
-            self,
-            user_id: int,
-            service_id: int
-    ):
+    async def add_service(self, user_id: int, service_id: int):
 
-        cart = await self.get_by_user_id(
-            user_id
-        )
+        cart = await self.get_by_user_id(user_id)
 
         if not cart:
-            cart = await self.create_cart(
-                user_id
-            )
+            cart = await self.create_cart(user_id)
 
-        service = await self.db.get(
-            Service,
-            service_id
-        )
+        service = await self.db.get(Service, service_id)
 
         if not service:
             return None
 
         item_result = await self.db.execute(
             select(CartItem).where(
-                CartItem.cart_id == cart.id,
-                CartItem.service_id == service_id
+                CartItem.cart_id == cart.id, CartItem.service_id == service_id
             )
         )
 
@@ -82,11 +58,7 @@ class CartRepository:
             cart_item.quantity += 1
 
         else:
-            cart_item = CartItem(
-                cart_id=cart.id,
-                service_id=service_id,
-                quantity=1
-            )
+            cart_item = CartItem(cart_id=cart.id, service_id=service_id, quantity=1)
 
             self.db.add(cart_item)
 
@@ -96,15 +68,9 @@ class CartRepository:
 
         return cart_item
 
-    async def remove_item(
-            self,
-            user_id: int,
-            item_id: int
-    ):
+    async def remove_item(self, user_id: int, item_id: int):
 
-        cart = await self.get_by_user_id(
-            user_id
-        )
+        cart = await self.get_by_user_id(user_id)
 
         if not cart:
             return False
@@ -124,13 +90,8 @@ class CartRepository:
 
         return True
 
-    async def clear_cart(
-            self,
-            user_id: int
-    ):
-        cart = await self.get_by_user_id(
-            user_id
-        )
+    async def clear_cart(self, user_id: int):
+        cart = await self.get_by_user_id(user_id)
 
         if not cart:
             return False

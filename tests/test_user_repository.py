@@ -15,15 +15,11 @@ async def test_get_by_email():
 
     db = MagicMock()
 
-    db.execute = AsyncMock(
-        return_value=FakeResult()
-    )
+    db.execute = AsyncMock(return_value=FakeResult())
 
     repo = UserRepository(db)
 
-    result = await repo.get_by_email(
-        "test@test.com"
-    )
+    result = await repo.get_by_email("test@test.com")
 
     assert result == "user"
 
@@ -33,15 +29,11 @@ async def test_get_by_phone():
 
     db = MagicMock()
 
-    db.execute = AsyncMock(
-        return_value=FakeResult()
-    )
+    db.execute = AsyncMock(return_value=FakeResult())
 
     repo = UserRepository(db)
 
-    result = await repo.get_by_phone(
-        "+79999999999"
-    )
+    result = await repo.get_by_phone("+79999999999")
 
     assert result == "user"
 
@@ -51,9 +43,7 @@ async def test_get_by_id():
 
     db = MagicMock()
 
-    db.execute = AsyncMock(
-        return_value=FakeResult()
-    )
+    db.execute = AsyncMock(return_value=FakeResult())
 
     repo = UserRepository(db)
 
@@ -77,7 +67,7 @@ async def test_create_user():
             "email": "test@test.com",
             "phone": "+79999999999",
             "full_name": "Test",
-            "hashed_password": "hash"
+            "hashed_password": "hash",
         }
     )
 
@@ -85,19 +75,16 @@ async def test_create_user():
     db.commit.assert_awaited_once()
     db.refresh.assert_awaited_once()
 
+
 @pytest.mark.asyncio
 async def test_get_by_email_or_phone():
 
     db = MagicMock()
 
-    db.execute = AsyncMock(
-        return_value=FakeResult()
-    )
+    db.execute = AsyncMock(return_value=FakeResult())
 
     repo = UserRepository(db)
 
-    result = await repo.get_by_email_or_phone(
-        "test@test.com"
-    )
+    result = await repo.get_by_email_or_phone("test@test.com")
 
     assert result == "user"

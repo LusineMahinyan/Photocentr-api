@@ -12,17 +12,11 @@ class OrderRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-
-    async def create(
-            self,
-            user_id: int,
-            service_ids: list[int]
-    ):
+    async def create(self, user_id: int, service_ids: list[int]):
 
         result = await self.db.execute(
             select(Service).where(
-                Service.id.in_(service_ids),
-                Service.is_active.is_(True)
+                Service.id.in_(service_ids), Service.is_active.is_(True)
             )
         )
 
@@ -31,33 +25,23 @@ class OrderRepository:
         if not services:
             return None
 
+        total_price = sum(service.price for service in services)
 
-        total_price = sum(
-            service.price for service in services
-        )
-
-
-        order = Order(
-            user_id=user_id,
-            total_price=total_price,
-            status="new"
-        )
+        order = Order(user_id=user_id, total_price=total_price, status="new")
 
         self.db.add(order)
 
         await self.db.flush()
-
 
         for service in services:
             item = OrderItem(
                 order_id=order.id,
                 service_id=service.id,
                 quantity=1,
-                price=service.price
+                price=service.price,
             )
 
             self.db.add(item)
-
 
         await self.db.commit()
         await self.db.refresh(order)
@@ -67,13 +51,7 @@ class OrderRepository:
     async def get_by_id(self, order_id: int):
 
         result = await self.db.execute(
-            select(Order)
-            .options(
-                selectinload(Order.items)
-            )
-            .where(
-                Order.id == order_id
-            )
+            select(Order).options(selectinload(Order.items)).where(Order.id == order_id)
         )
 
         return result.scalar_one_or_none()
@@ -82,34 +60,19 @@ class OrderRepository:
 
         result = await self.db.execute(
             select(Order)
-            .options(
-                selectinload(Order.items)
-            )
-            .where(
-                Order.user_id == user_id
-            )
+            .options(selectinload(Order.items))
+            .where(Order.user_id == user_id)
         )
 
         return result.scalars().all()
 
     async def get_all(self):
 
-        result = await self.db.execute(
-            select(Order)
-            .options(
-                selectinload(Order.items)
-            )
-        )
+        result = await self.db.execute(select(Order).options(selectinload(Order.items)))
 
         return result.scalars().all()
 
-
-
-    async def update_status(
-            self,
-            order: Order,
-            status: str
-    ):
+    async def update_status(self, order: Order, status: str):
 
         order.status = status
 
@@ -118,19 +81,11 @@ class OrderRepository:
 
         return order
 
-    async def create_from_cart(
-            self,
-            user_id: int,
-            cart
-    ):
+    async def create_from_cart(self, user_id: int, cart):
 
         total_price = 0
 
-        order = Order(
-            user_id=user_id,
-            total_price=0,
-            status="new"
-        )
+        order = Order(user_id=user_id, total_price=0, status="new")
 
         self.db.add(order)
 
@@ -145,7 +100,7 @@ class OrderRepository:
                 order_id=order.id,
                 service_id=cart_item.service_id,
                 quantity=cart_item.quantity,
-                price=price
+                price=price,
             )
 
             self.db.add(order_item)
@@ -155,13 +110,7 @@ class OrderRepository:
         await self.db.commit()
 
         result = await self.db.execute(
-            select(Order)
-            .options(
-                selectinload(Order.items)
-            )
-            .where(
-                Order.id == order.id
-            )
+            select(Order).options(selectinload(Order.items)).where(Order.id == order.id)
         )
 
         return result.scalar_one()

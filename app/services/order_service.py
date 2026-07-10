@@ -7,35 +7,15 @@ class OrderService:
     def __init__(self, repository: OrderRepository):
         self.repository = repository
 
+    async def create_order(self, user_id: int, order_data: OrderCreate):
+        return await self.repository.create(user_id, order_data.service_ids)
 
-    async def create_order(
-            self,
-            user_id: int,
-            order_data: OrderCreate
-    ):
-        return await self.repository.create(
-            user_id,
-            order_data.service_ids
-        )
+    async def get_my_orders(self, user_id: int):
+        return await self.repository.get_user_orders(user_id)
 
+    async def get_order(self, order_id: int, user_id: int | None = None):
 
-    async def get_my_orders(
-            self,
-            user_id: int
-    ):
-        return await self.repository.get_user_orders(
-            user_id
-        )
-
-    async def get_order(
-            self,
-            order_id: int,
-            user_id: int | None = None
-    ):
-
-        order = await self.repository.get_by_id(
-            order_id
-        )
+        order = await self.repository.get_by_id(order_id)
 
         if not order:
             return None
@@ -46,25 +26,14 @@ class OrderService:
 
         return order
 
-
     async def get_all_orders(self):
         return await self.repository.get_all()
 
+    async def update_status(self, order_id: int, status_data: OrderStatusUpdate):
 
-    async def update_status(
-            self,
-            order_id: int,
-            status_data: OrderStatusUpdate
-    ):
-
-        order = await self.repository.get_by_id(
-            order_id
-        )
+        order = await self.repository.get_by_id(order_id)
 
         if not order:
             return None
 
-        return await self.repository.update_status(
-            order,
-            status_data.status
-        )
+        return await self.repository.update_status(order, status_data.status)

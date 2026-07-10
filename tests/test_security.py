@@ -45,9 +45,7 @@ def test_verify_password_wrong_password():
 
 
 def test_create_access_token():
-    data = {
-        "sub": "1"
-    }
+    data = {"sub": "1"}
 
     token = create_access_token(data)
 

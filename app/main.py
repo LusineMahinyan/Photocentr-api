@@ -9,24 +9,14 @@ from app.api.v1.services import router as services_router
 from app.api.v1.orders import router as orders_router
 from app.api.v1.cart import router as cart_router
 
-
 app = FastAPI(
     title="Слоник API",
     version="1.0.0",
     openapi_tags=[
-        {
-            "name": "Users",
-            "description": "Регистрация и авторизация пользователей"
-        },
-        {
-            "name": "Services",
-            "description": "Работа с услугами фотоцентра"
-        },
-        {
-            "name": "Orders",
-            "description": "Работа с заказами фотоцентра"
-        }
-    ]
+        {"name": "Users", "description": "Регистрация и авторизация пользователей"},
+        {"name": "Services", "description": "Работа с услугами фотоцентра"},
+        {"name": "Orders", "description": "Работа с заказами фотоцентра"},
+    ],
 )
 
 
@@ -50,6 +40,4 @@ app.include_router(cart_router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
-    return {
-        "message": "Добро пожаловать в API фотоцентра «Слоник»!"
-    }
+    return {"message": "Добро пожаловать в API фотоцентра «Слоник»!"}

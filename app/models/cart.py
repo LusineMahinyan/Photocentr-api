@@ -9,31 +9,20 @@ from app.db.base import Base
 class Cart(Base):
     __tablename__ = "carts"
 
-    id: Mapped[int] = mapped_column(
-        primary_key=True,
-        index=True
-    )
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id"),
-        unique=True,
-        nullable=False
+        ForeignKey("users.id"), unique=True, nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        server_default=func.now(),
-        nullable=False
+        DateTime, server_default=func.now(), nullable=False
     )
 
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False
+        DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
     )
 
     items: Mapped[list["CartItem"]] = relationship(
-        back_populates="cart",
-        cascade="all, delete-orphan"
+        back_populates="cart", cascade="all, delete-orphan"
     )

@@ -10,7 +10,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.core.dependencies import get_current_user
 from app.models.user import User
 
-
 router = APIRouter(
     prefix="/users",
     tags=["Users"],
@@ -31,6 +30,7 @@ async def register_user(
 
     return await service.register(user_data)
 
+
 @router.post("/login", response_model=TokenResponse)
 async def login_user(
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -43,6 +43,7 @@ async def login_user(
         form_data.username,
         form_data.password,
     )
+
 
 @router.get("/me")
 async def get_me(current_user: User = Depends(get_current_user)):

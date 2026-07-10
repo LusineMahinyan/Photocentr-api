@@ -4,9 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class OrderCreate(BaseModel):
-    service_ids: list[int] = Field(
-        min_length=1
-    )
+    service_ids: list[int] = Field(min_length=1)
 
 
 class OrderStatusUpdate(BaseModel):

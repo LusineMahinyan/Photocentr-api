@@ -25,7 +25,7 @@ def user_data():
         email="ivan@test.com",
         phone="+79991234567",
         password="Password1!",
-        confirm_password="Password1!"
+        confirm_password="Password1!",
     )
 
 
@@ -33,10 +33,7 @@ def user_data():
 async def test_register_success(service, repository, user_data):
     repository.get_by_email.return_value = None
     repository.get_by_phone.return_value = None
-    repository.create.return_value = {
-        "id": 1,
-        "email": user_data.email
-    }
+    repository.create.return_value = {"id": 1, "email": user_data.email}
 
     result = await service.register(user_data)
 

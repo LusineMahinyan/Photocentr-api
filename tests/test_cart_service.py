@@ -35,10 +35,7 @@ async def test_get_empty_cart(service, cart_repository):
 
     result = await service.get_cart(1)
 
-    assert result == {
-        "items": [],
-        "total_price": 0
-    }
+    assert result == {"items": [], "total_price": 0}
 
 
 @pytest.mark.asyncio
